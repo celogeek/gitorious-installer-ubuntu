@@ -1,1 +1,6 @@
-Work in progress
+# HOW TO USE THE INSTALLER
+
+First you need deboostrap with Ubuntu Lucid support.
+On Ubuntu just install debootstrap :
+
+sudo apt-get install debootstrap
