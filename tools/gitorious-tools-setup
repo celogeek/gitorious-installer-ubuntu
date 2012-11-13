@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#CONF
+set -e -x
+cat <<EOF | sudo tee $INSTALL_DIR/usr/sbin/policy-rc.d
+#!/bin/sh
+exit 101
+EOF
+
+chmod +x $INSTALL_DIR/usr/sbin/policy-rc.d
+cat <<EOF | sudo tee $INSTALL_DIR/usr/sbin/invoke-rc.d
+#!/bin/sh
+exit 0
+EOF
+
+chmod +x $INSTALL_DIR/usr/sbin/invoke-rc.d
+cat <<EOF | sudo tee $INSTALL_DIR/etc/apt/sources.list
+deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal main restricted
+deb http://security.ubuntu.com/ubuntu quantal-security main restricted
+deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal-updates main restricted
+
+deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal universe multiverse
+deb http://security.ubuntu.com/ubuntu quantal-security universe multiverse
+deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal-updates universe multiverse
+EOF
+set +e +x
+
+apt-get update
+apt-get upgrade -y
+apt-get install -y git-core apg build-essential libpcre3 libpcre3-dev postfix make zlib1g zlib1g-dev ssh libc6-dev libssl-dev libmysql++-dev libmysqlclient-dev libsqlite3-dev libreadline-dev libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1 imagemagick mysql-client mysql-server libmysqlclient-dev sphinxsearch memcached apache2
