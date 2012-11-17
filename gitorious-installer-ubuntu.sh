@@ -8,6 +8,15 @@ DBS_FILE=/usr/share/debootstrap/scripts/$DBS_DISTRO
 INSTALL_DIR=/var/lib/gitorious
 SUDO=$(which sudo)
 
+function gitorious_checkport {
+	H=$(hostname -i)
+	if nc -z $H 22
+	then
+		echo "Please change the host SSH port, gitorious will need it"
+		exit 1
+	fi
+}
+
 function gitorious_setup {
 	sudo sed -i "/gitorious/d" /etc/fstab
 	sudo sed -i "/gitorious/d" /etc/hosts
@@ -56,6 +65,7 @@ then
 
 fi
 
+gitorious_checkport
 gitorious_setup
 gitorious_install_files
 
