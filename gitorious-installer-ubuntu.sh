@@ -8,13 +8,16 @@ DBS_FILE=/usr/share/debootstrap/scripts/$DBS_DISTRO
 INSTALL_DIR=/var/lib/gitorious
 SUDO=$(which sudo)
 
-function gitorious_setup_mount {
+function gitorious_setup {
 	sudo sed -i "/gitorious/d" /etc/fstab
+	sudo sed -i "/gitorious/d" /etc/hosts
 	cat <<EOF | sudo tee -a /etc/fstab > /dev/null
-/proc $INSTALL_DIR/proc bind defaults,bind 0 0
-/dev $INSTALL_DIR/dev bind defaults,bind 0 0
-/dev/pts $INSTALL_DIR/dev/pts bind defaults,bind 0 0
-/sys $INSTALL_DIR/sys bind defaults,bind 0 0
+/dev/pts $INSTALL_DIR/dev/pts none bind 0 4
+proc $INSTALL_DIR/proc proc defaults 0 4
+sysfs $INSTALL_DIR/sys sysfs defaults 0 4
+EOF
+	cat <<EOF | sudo tee -a /etc/hosts > /dev/null
+127.0.1.1 gitorious
 EOF
 	sudo mount -a
 }
@@ -53,7 +56,7 @@ then
 
 fi
 
-gitorious_setup_mount
+gitorious_setup
 gitorious_install_files
 
 cat <<EOF
