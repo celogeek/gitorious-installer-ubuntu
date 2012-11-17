@@ -4,6 +4,17 @@ INSTALL_DIR=/var/lib/gitorious
 TOOLS_BASE=/usr/bin/gitorious-tools-
 COMMAND=$1
 
+function help {
+cat <<EOF
+gitorious command :
+
+	setup: setup chroot env for gitorious
+	enter: enter chroot
+
+EOF
+exit 1
+}
+
 if [ ! -d "$INSTALL_DIR" ]
 then
 	echo "Please install gitorious first"
@@ -12,8 +23,7 @@ fi
 
 if [ "$COMMAND" == "" ]
 then
-	echo "Please use a command"
-	exit 1
+	help
 fi
 
 if [ "$COMMAND" == "enter" ]
@@ -23,7 +33,7 @@ else
 	if [ ! -x "$INSTALL_DIR$TOOLS_BASE$COMMAND" ]
 	then
 		echo "This command doesnt exist"
-		exit 1
+		help
 	fi
 
 	LANG=C sudo chroot "$INSTALL_DIR" "$TOOLS_BASE$COMMAND"
