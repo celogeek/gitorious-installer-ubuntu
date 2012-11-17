@@ -28,11 +28,6 @@ cat <<EOF > /etc/mtab
 rootfs / rootfs rw 0 0
 EOF
 
-sed '/127\.0\.1\.1/d' /etc/hosts
-cat <<EOF > /etc/hosts
-127.0.1.1 gitorious
-EOF
-
 cat <<EOF > /etc/apt/apt.conf.d/70debconf
 // Pre-configure all packages with debconf before they are installed.
 // If you don't like it, comment it out.
@@ -43,7 +38,7 @@ set +e +x
 
 apt-get update
 apt-get upgrade -y
-apt-get install -y git-core apg build-essential libpcre3 libpcre3-dev postfix make zlib1g zlib1g-dev ssh libc6-dev libssl-dev libmysql++-dev libmysqlclient-dev libsqlite3-dev libreadline-dev libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1 imagemagick mysql-client mysql-server libmysqlclient-dev sphinxsearch memcached apache2 curl build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config
+apt-get install -y git-core apg build-essential libpcre3 libpcre3-dev postfix make zlib1g zlib1g-dev ssh libc6-dev libssl-dev libmysql++-dev libmysqlclient-dev libsqlite3-dev libreadline-dev libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1 imagemagick mysql-client mysql-server libmysqlclient-dev sphinxsearch memcached apache2 curl build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config vim
 
 curl -L https://get.rvm.io | bash -s stable
 source /etc/profile.d/rvm.sh
@@ -56,6 +51,21 @@ chmod -R 755 /usr/local/rvm
 su - git bash -c 'git clone git://gitorious.org/gitorious/mainline.git gitorious'
 su - git bash -c 'gem install --no-rdoc --no-ri bundler'
 su - git bash -c 'cd gitorious && bundle install'
+su - git bash -c 'mkdir .ssh; chmod 700 .ssh; touch .ssh/authorized_keys'
+mkdir /var/git
+mkdir /var/git/repositories
+mkdir /var/git/tarballs
+mkdir /var/git/tarball-work
+chown -R git:git /var/git
+su - git bash -c 'cd gitorious; cp config/database.sample.yml config/database.yml; cp config/gitorious.sample.yml config/gitorious.yml; cp config/broker.yml.example config/broker.yml'
+su - git bash -c 'cd gitorious; K=$(apg -m64 -d); sed -i "s/cookie_secret: ssssht/cookie_secret: $K/" config/gitorious.yml'
+su - git bash -c 'cd gitorious; F=$(hostname -f); sed -i "0,/gitorious_host:/s/gitorious_host:.*/gitorious_host: $F/" config/gitorious.yml'
+su - git bash -c 'cd gitorious; sed -i "s/#is_gitorious_dot_org: true/is_gitorious_dot_org: false/" config/gitorious.yml'
+su - git bash -c 'cd gitorious; sed -i "s/#public_mode: true/public_mode: true/" config/gitorious.yml'
+su - git bash -c 'cd gitorious; sed -i "s/#enable_private_repositories: false/enable_private_repositories: true/" config/gitorious.yml'
+su - git bash -c 'cd gitorious; sed -i "s/# only_site_admins_can_create_projects: false/only_site_admins_can_create_projects: true/" config/gitorious.yml'
 
-
+initctl reload-configuration
+initctl start mysql
+su - git bash -c 'cd gitorious; grep database: config/database.yml | awk "{print \"CREATE DATABASE IF NOT EXISTS \" \$2 \";\"}"' | mysql -u root
 
