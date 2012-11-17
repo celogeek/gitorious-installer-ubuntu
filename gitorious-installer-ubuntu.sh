@@ -15,6 +15,11 @@ function gitorious_checkport {
 		echo "Please change the host SSH port, gitorious will need it"
 		exit 1
 	fi
+	if nc -z $H 80
+	then
+		echo "Please change the host HTTP port, gitorious will need it"
+		exit 1
+	fi
 }
 
 function gitorious_setup {
