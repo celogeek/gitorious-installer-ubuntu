@@ -67,5 +67,9 @@ su - git bash -c 'cd gitorious; sed -i "s/# only_site_admins_can_create_projects
 
 initctl reload-configuration
 initctl start mysql
-su - git bash -c 'cd gitorious; grep database: config/database.yml | awk "{print \"CREATE DATABASE IF NOT EXISTS \" \$2 \";\"}"' | mysql -u root
+su - git bash -c 'cd gitorious; grep database: config/database.yml | awk "{print \"CREATE DATABASE IF NOT EXISTS \" \$2 \";\"}"' | mysql -v -u root
+
+su - git bash -c 'cd gitorious; sed -i "0,/module/s/^module/require \"thread\"\n\nmodule/" config/boot.rb'
+su - git bash -c 'cd gitorious; rake db:setup RAILS_ENV=production'
+su - git bash -c 'cd gitorious; RAILS_ENV=production ruby script/create_admin'
 
