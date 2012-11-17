@@ -16,10 +16,15 @@ then
 	exit 1
 fi
 
-if [ ! -x "$INSTALL_DIR$TOOLS_BASE$COMMAND" ]
+if [ "$COMMAND" == "enter" ]
 then
-	echo "This command doesnt exist"
-	exit 1
-fi
+	LANG=C sudo chroot "$INSTALL_DIR" su -
+else
+	if [ ! -x "$INSTALL_DIR$TOOLS_BASE$COMMAND" ]
+	then
+		echo "This command doesnt exist"
+		exit 1
+	fi
 
-LANG=C sudo chroot "$INSTALL_DIR" "$TOOLS_BASE$COMMAND"
+	LANG=C sudo chroot "$INSTALL_DIR" "$TOOLS_BASE$COMMAND"
+fi
