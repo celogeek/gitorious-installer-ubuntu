@@ -20,6 +20,12 @@ function gitorious_checkport {
 		echo "Please change the host HTTP port, gitorious will need it"
 		exit 1
 	fi
+
+	if nc -z 127.0.0.1 3306
+	then
+		echo "Please change the host MySQL port, gitorious will need it"
+		exit 1
+	fi
 }
 
 function gitorious_setup {
@@ -33,6 +39,7 @@ EOF
 	cat <<EOF | sudo tee -a /etc/hosts > /dev/null
 127.0.1.1 gitorious
 EOF
+	sudo cp /etc/hosts $INSTALL_DIR/etc/hosts
 	sudo mount -a
 }
 
@@ -78,5 +85,9 @@ cat <<EOF
 Tools for gitorious has been installed, and based directory is ready. You can now run the gitorious command setup :
 
 gitorious setup
+
+Keep all value by default. 
+  MySQL keep the default root password for futher configuration.
+  Postfix, configure it as Satellite and put your real email server.
 
 EOF
