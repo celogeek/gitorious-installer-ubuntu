@@ -45,8 +45,14 @@ apt-get update
 apt-get upgrade -y
 apt-get install -y git-core apg build-essential libpcre3 libpcre3-dev postfix make zlib1g zlib1g-dev ssh libc6-dev libssl-dev libmysql++-dev libmysqlclient-dev libsqlite3-dev libreadline-dev libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1 imagemagick mysql-client mysql-server libmysqlclient-dev sphinxsearch memcached apache2 curl build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config
 
-
 curl -L https://get.rvm.io | bash -s stable
 source /etc/profile.d/rvm.sh
 rvm install ree-1.8.7
+
+useradd -G rvm -m -U -s /bin/bash git
+chgrp -R rvm /usr/local/rvm
+chmod -R g+rws /usr/local/rvm
+
+su - git bash -c 'git clone git://gitorious.org/gitorious/mainline.git gitorious'
+
 
