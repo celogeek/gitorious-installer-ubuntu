@@ -3,18 +3,20 @@
 echo "Reload conf ..."
 initctl reload-configuration
 echo "Start ssh ..."
-service ssh start >& /dev/null
+service ssh start &> /dev/null
 echo "Start memcached ..."
-service memcached start >& /dev/null
+service memcached start &> /dev/null
+echo "Start mysql ..."
+service mysql start &> /dev/null
 echo "Start Git Daemon ..."
-su - git bash -c 'cd gitorious; RAILS_ENV=production script/git-daemon -d' >& /dev/null
+su - git bash -c 'cd gitorious; RAILS_ENV=production script/git-daemon -d' &> /dev/null
 echo "Start Stomp ..."
-su - git bash -c 'cd gitorious; RAILS_ENV=production stompserver -w tmp/stomp -q file -s queue& echo $! > log/stompserver.pid' >& /dev/null
+su - git bash -c 'cd gitorious; RAILS_ENV=production stompserver -w tmp/stomp -q file -s queue& echo $! > log/stompserver.pid' &> /dev/null
 echo "Start poller ..."
-su - git bash -c 'cd gitorious; mkdir -p tmp/pids; RAILS_ENV=production script/poller start' >& /dev/null
+su - git bash -c 'cd gitorious; mkdir -p tmp/pids; RAILS_ENV=production script/poller start' &> /dev/null
 echo "Start ultrasphinx ..."
-su - git bash -c 'cd gitorious; RAILS_ENV=production rake ultrasphinx:daemon:start' >& /dev/null
+su - git bash -c 'cd gitorious; RAILS_ENV=production rake ultrasphinx:daemon:start' &> /dev/null
 echo "Start apache2 ..."
-service apache2 start >& /dev/null
+service apache2 start &> /dev/null
 
 
