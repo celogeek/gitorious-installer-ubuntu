@@ -11,6 +11,8 @@ gitorious command :
 	setup: setup chroot env for gitorious
 	enter: enter chroot
 	conf: customize gitorious setup
+	start: start gitorious
+	stop: stop gitorious
 
 EOF
 exit 1
