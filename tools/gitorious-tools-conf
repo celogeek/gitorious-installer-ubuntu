@@ -1,2 +1,2 @@
 #!/bin/bash
-su - git bash -c 'cd gitorious; vim config/gitorious.yml'
+su - git bash -c 'cd gitorious; vim config/gitorious.yml; touch tmp/restart.txt'
