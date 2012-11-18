@@ -55,7 +55,7 @@ su - git bash -c 'mkdir .ssh; chmod 700 .ssh; touch .ssh/authorized_keys'
 mkdir /var/git
 mkdir /var/git/repositories
 mkdir /var/git/tarballs
-mkdir /var/git/tarball-work
+mkdir /var/git/tarballs-work
 chown -R git:git /var/git
 su - git bash -c 'cd gitorious; cp config/database.sample.yml config/database.yml; cp config/gitorious.sample.yml config/gitorious.yml; cp config/broker.yml.example config/broker.yml'
 su - git bash -c 'cd gitorious; K=$(apg -m64 -d); sed -i "s/cookie_secret: ssssht/cookie_secret: $K/" config/gitorious.yml'
@@ -149,3 +149,11 @@ EOF
 
 a2ensite default
 a2ensite default-ssl
+
+sed -i 's/^PasswordAuthentication/#PasswordAuthentication/' /etc/ssh/sshd_config
+cat <<EOF >> /etc/ssh/sshd_config
+PasswordAuthentication no
+EOF
+
+ln -s /home/git/gitorious/script/gitorious /usr/local/bin/
+sed -i 's/^#!\/usr\/bin\/env ruby/#!\/usr\/local\/rvm\/bin\/gitorious_ruby/' /home/git/gitorious/script/gitorious
