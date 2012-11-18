@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "Reload conf ..."
+initctl reload-configuration
+echo "Stop apache2 ..."
+service apache2 stop &> /dev/null
+echo "Stop memcached ..."
+service memcached stop &> /dev/null
+echo "Stop ssh ..."
+service ssh stop &> /dev/null
+echo "Stop Git Daemon ..."
+su - git bash -c 'cd gitorious; kill $(cat log/git-daemon.pid)' &> /dev/null
+echo "Stop poller ..."
+su - git bash -c 'cd gitorious; mkdir -p tmp/pids; RAILS_ENV=production script/poller stop' &> /dev/null
+echo "Stop ultrasphinx ..."
+su - git bash -c 'cd gitorious; RAILS_ENV=production rake ultrasphinx:daemon:stop' &> /dev/null
+echo "Stop Stomp ..."
+su - git bash -c 'cd gitorious; kill $(cat log/stompserver.pid)' &> /dev/null
+
+
