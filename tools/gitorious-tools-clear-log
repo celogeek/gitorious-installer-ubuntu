@@ -1,2 +1,7 @@
 #!/bin/bash
 su - git bash -c 'cd gitorious/log; for i in *.log; do echo -n > $i;done'
+su - git bash -c 'cd gitorious; touch tmp/restart.txt'
+su - git bash -c 'cd gitorious; RAILS_ENV=production rake ultrasphinx:daemon:restart' &> /dev/null
+su - git bash -c 'cd gitorious; kill $(cat log/git-daemon.pid)' &> /dev/null
+su - git bash -c 'cd gitorious; RAILS_ENV=production script/git-daemon -d' &> /dev/null
+
