@@ -12,18 +12,42 @@ function gitorious_checkport {
 	H=$(hostname -i)
 	if nc -z $H 22
 	then
-		echo "Please change the host SSH port, gitorious will need it"
+		echo "Please change the host SSH port, gitorious will need it for ssh"
 		exit 1
 	fi
-	if nc -z $H 80
+	if nc -z $H 80 || nc -z $H 443
 	then
-		echo "Please change the host HTTP port, gitorious will need it"
+		echo "Please change the host HTTP / HTTPS port, gitorious will need it for apache2"
 		exit 1
 	fi
 
 	if nc -z 127.0.0.1 3306
 	then
-		echo "Please change the host MySQL port, gitorious will need it"
+		echo "Please change the host MySQL port, gitorious will need it for mysql"
+		exit 1
+	fi
+
+	if nc -z 127.0.0.1 61613
+	then
+		echo "Please change the host port 61613, gitorious will need it for stomp"
+		exit 1
+	fi
+
+	if nc -z 127.0.0.1 11211
+	then
+		echo "Please change the host port 11211, gitorious will need it for memcached"
+		exit 1
+	fi
+
+	if nc -z 127.0.0.1 9418
+	then
+		echo "Please change the host port 9418, gitorious will need it for git daemon"
+		exit 1
+	fi
+
+	if nc -z 127.0.0.1 3312
+	then
+		echo "Please change the host port 3312, gitorious will need it for ultrasphinx"
 		exit 1
 	fi
 }
@@ -58,14 +82,14 @@ then
 	exit 1
 fi
 
-gitorious_checkport
-
 if [ "$SKIP_DEBOOTSTRAP" == "" ]
 then
 
 	if [ -d $INSTALL_DIR ]
 	then
-		echo "Root dir already install, remote it to do it again"
+		echo "Root dir already install, remove it to do it again"
+		echo "You can run and skip debootstrap :"
+		echo "SKIP_DEBOOTSTRAP=1 $0"
 		exit 1
 	fi
 
@@ -79,6 +103,7 @@ then
 
 fi
 
+gitorious_checkport
 gitorious_setup
 gitorious_install_files
 

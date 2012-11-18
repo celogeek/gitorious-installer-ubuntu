@@ -8,8 +8,6 @@ echo "Stop memcached ..."
 service memcached stop &> /dev/null
 echo "Stop ssh ..."
 service ssh stop &> /dev/null
-echo "Stop mysql ..."
-service mysql stop &> /dev/null
 echo "Stop Git Daemon ..."
 su - git bash -c 'cd gitorious; kill $(cat log/git-daemon.pid)' &> /dev/null
 echo "Stop poller ..."
@@ -18,5 +16,7 @@ echo "Stop ultrasphinx ..."
 su - git bash -c 'cd gitorious; RAILS_ENV=production rake ultrasphinx:daemon:stop' &> /dev/null
 echo "Stop Stomp ..."
 su - git bash -c 'cd gitorious; kill $(cat log/stompserver.pid)' &> /dev/null
+echo "Stop mysql ..."
+service mysql stop &> /dev/null
 
 
