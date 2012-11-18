@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "Reload conf ..."
+initctl reload-configuration
+echo "Start ssh ..."
+service ssh start
+echo "Start Git Daemon ..."
+su - git bash -c 'cd gitorious; RAILS_ENV=production script/git-daemon -d'
+echo "Start Stomp ..."
+su - git bash -c 'cd gitorious; RAILS_ENV=production stompserver -w tmp/stomp -q file -s queue& echo $! > log/stompserver.pid'
+echo "Start poller ..."
+su - git bash -c 'cd gitorious; mkdir -p tmp/pids; RAILS_ENV=production script/poller start'
+echo "Start ultrasphinx ..."
+su - git bash -c 'cd gitorious; RAILS_ENV=production rake ultrasphinx:daemon:start'
+echo "Start apache2 ..."
+service apache2 start
+
