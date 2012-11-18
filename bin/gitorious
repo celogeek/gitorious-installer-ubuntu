@@ -13,6 +13,7 @@ gitorious command :
 	conf: customize gitorious setup
 	start: start gitorious
 	stop: stop gitorious
+	cron: start cron
 
 EOF
 exit 1

@@ -1,0 +1,2 @@
+#!/bin/bash
+su - git bash -c 'cd gitorious; rake ultrasphinx:index RAILS_ENV=production'
