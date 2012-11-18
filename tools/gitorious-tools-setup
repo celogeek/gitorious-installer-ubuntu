@@ -58,7 +58,7 @@ mkdir /var/git/tarballs
 mkdir /var/git/tarballs-work
 chown -R git:git /var/git
 su - git bash -c 'cd gitorious; cp config/database.sample.yml config/database.yml; cp config/gitorious.sample.yml config/gitorious.yml; cp config/broker.yml.example config/broker.yml'
-su - git bash -c 'cd gitorious; K=$(apg -m64 -d); sed -i "s/cookie_secret: ssssht/cookie_secret: $K/" config/gitorious.yml'
+su - git bash -c 'cd gitorious; K=$(apg -m64 -d -M ncl); sed -i "s/cookie_secret: ssssht/cookie_secret: $K/" config/gitorious.yml'
 su - git bash -c 'cd gitorious; F=$(hostname -f); sed -i "0,/gitorious_host:/s/gitorious_host:.*/gitorious_host: $F/" config/gitorious.yml'
 su - git bash -c 'cd gitorious; sed -i "s/#is_gitorious_dot_org: true/is_gitorious_dot_org: false/" config/gitorious.yml'
 su - git bash -c 'cd gitorious; sed -i "s/#public_mode: true/public_mode: true/" config/gitorious.yml'
