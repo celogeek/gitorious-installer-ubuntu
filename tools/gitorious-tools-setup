@@ -38,7 +38,7 @@ set +e +x
 
 apt-get update
 apt-get upgrade -y
-apt-get install -y git-core apg build-essential libpcre3 libpcre3-dev postfix make zlib1g zlib1g-dev ssh libc6-dev libssl-dev libmysql++-dev libmysqlclient-dev libsqlite3-dev libreadline-dev libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1 imagemagick mysql-client mysql-server libmysqlclient-dev sphinxsearch memcached apache2 curl build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config vim
+apt-get install -y git-core apg build-essential libpcre3 libpcre3-dev postfix make zlib1g zlib1g-dev ssh libc6-dev libssl-dev libmysql++-dev libmysqlclient-dev libsqlite3-dev libreadline-dev libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1 imagemagick mysql-client mysql-server libmysqlclient-dev sphinxsearch memcached apache2 curl build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion pkg-config vim apache2-prefork-dev libcurl4-openssl-dev libapache2-mod-xsendfile
 
 curl -L https://get.rvm.io | bash -s stable
 source /etc/profile.d/rvm.sh
@@ -72,4 +72,80 @@ su - git bash -c 'cd gitorious; grep database: config/database.yml | awk "{print
 su - git bash -c 'cd gitorious; sed -i "0,/module/s/^module/require \"thread\"\n\nmodule/" config/boot.rb'
 su - git bash -c 'cd gitorious; rake db:setup RAILS_ENV=production'
 su - git bash -c 'cd gitorious; RAILS_ENV=production ruby script/create_admin'
+su - git bash -c 'cd gitorious; rake ultrasphinx:bootstrap RAILS_ENV=production'
 
+su - git bash -c 'gem install --no-rdoc --no-ri passenger'
+su - git bash -c 'passenger-install-apache2-module'
+
+su - git bash -c 'rvm wrapper ree-1.8.7 gitorious'
+
+PASSENGER_ROOT=$(su - git bash -c 'passenger-config --root')
+cat <<EOF > /etc/apache2/mods-available/rails.load
+   LoadModule passenger_module $PASSENGER_ROOT/ext/apache2/mod_passenger.so
+   PassengerRoot $PASSENGER_ROOT
+   PassengerRuby /usr/local/rvm/bin/gitorious_ruby
+EOF
+
+a2enmod rails
+a2enmod rewrite
+a2enmod deflate
+a2enmod expires
+a2enmod xsendfile
+a2enmod ssl
+
+cat <<EOF > /etc/apache2/sites-available/default
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /home/git/gitorious/public
+	<Directory /home/git/gitorious/public>
+		AllowOverride All
+		Options -MultiViews
+	</Directory>
+
+	ErrorLog \${APACHE_LOG_DIR}/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+EOF
+
+cat <<EOF > /etc/apache2/sites-available/default-ssl
+<IfModule mod_ssl.c>
+<VirtualHost _default_:443>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /home/git/gitorious/public
+	<Directory /home/git/gitorious/public>
+		AllowOverride All
+		Options -MultiViews
+	</Directory>
+
+	ErrorLog \${APACHE_LOG_DIR}/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog \${APACHE_LOG_DIR}/ssl_access.log combined
+
+	#   SSL Engine Switch:
+	#   Enable/Disable SSL for this virtual host.
+	SSLEngine on
+	SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+	SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+	BrowserMatch "MSIE [2-6]" \
+		nokeepalive ssl-unclean-shutdown \
+		downgrade-1.0 force-response-1.0
+	# MSIE 7 and newer should be able to use keepalive
+	BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+</VirtualHost>
+</IfModule>
+EOF
+
+a2ensite default
+a2ensite default-ssl
