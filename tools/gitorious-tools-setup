@@ -206,3 +206,25 @@ EOF
 
 ln -s /home/git/gitorious/script/gitorious /usr/local/bin/
 sed -i 's/^#!\/usr\/bin\/env ruby/#!\/usr\/local\/rvm\/bin\/gitorious_ruby/' /home/git/gitorious/script/gitorious
+
+cat <<EOF
+
+Setup finish
+
+Start service with :
+
+gitorious start
+
+Stop service with :
+
+gitorious stop
+
+Change conf with :
+
+gitorious conf
+
+Enter chroot to change service with :
+
+gitorious enter
+
+EOF
