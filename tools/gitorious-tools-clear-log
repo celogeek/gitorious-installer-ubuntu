@@ -1,0 +1,2 @@
+#!/bin/bash
+su - git bash -c 'cd gitorious/log; for i in *.log; do echo -n > $i;done'
