@@ -95,53 +95,102 @@ a2enmod ssl
 
 cat <<EOF > /etc/apache2/sites-available/default
 <VirtualHost *:80>
-	ServerAdmin webmaster@localhost
+    DocumentRoot /home/git/gitorious/public
+    <Directory /home/git/gitorious/public>
+        Options FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from All
+    </Directory>
 
-	DocumentRoot /home/git/gitorious/public
-	<Directory /home/git/gitorious/public>
-		AllowOverride All
-		Options -MultiViews
-	</Directory>
 
-	ErrorLog \${APACHE_LOG_DIR}/error.log
+    # Gzip/Deflate
+    # http://fluxura.com/2006/5/19/apache-for-static-and-mongrel-for-rails-with-mod_deflate-and-capistrano-support
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript text/css application/x-javascript
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 
-	# Possible values include: debug, info, notice, warn, error, crit,
-	# alert, emerg.
-	LogLevel warn
+    # Far future expires date
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+        ExpiresActive On
+        ExpiresDefault "access plus 1 year"
+    </FilesMatch>
 
-	CustomLog \${APACHE_LOG_DIR}/access.log combined
+    # No Etags
+    FileETag None
+
+    RewriteEngine On
+
+    # Check for maintenance file and redirect all requests
+    RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+    RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+    RewriteRule ^.*$ /system/maintenance.html [L]
+
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+    
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 EOF
+
 
 cat <<EOF > /etc/apache2/sites-available/default-ssl
 <IfModule mod_ssl.c>
 <VirtualHost _default_:443>
-	ServerAdmin webmaster@localhost
+    DocumentRoot /home/git/gitorious/public
+    <Directory /home/git/gitorious/public>
+        Options FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from All
+    </Directory>
 
-	DocumentRoot /home/git/gitorious/public
-	<Directory /home/git/gitorious/public>
-		AllowOverride All
-		Options -MultiViews
-	</Directory>
 
-	ErrorLog \${APACHE_LOG_DIR}/error.log
+    # Gzip/Deflate
+    # http://fluxura.com/2006/5/19/apache-for-static-and-mongrel-for-rails-with-mod_deflate-and-capistrano-support
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript text/css application/x-javascript
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 
-	# Possible values include: debug, info, notice, warn, error, crit,
-	# alert, emerg.
-	LogLevel warn
+    # Far future expires date
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+        ExpiresActive On
+        ExpiresDefault "access plus 1 year"
+    </FilesMatch>
 
-	CustomLog \${APACHE_LOG_DIR}/ssl_access.log combined
+    # No Etags
+    FileETag None
 
-	#   SSL Engine Switch:
-	#   Enable/Disable SSL for this virtual host.
-	SSLEngine on
-	SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
-	SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-	BrowserMatch "MSIE [2-6]" \
-		nokeepalive ssl-unclean-shutdown \
-		downgrade-1.0 force-response-1.0
-	# MSIE 7 and newer should be able to use keepalive
-	BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+    RewriteEngine On
+
+    # Check for maintenance file and redirect all requests
+    RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+    RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+    RewriteRule ^.*$ /system/maintenance.html [L]
+
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+    
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
+
+    #   SSL Engine Switch:
+    #   Enable/Disable SSL for this virtual host.
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    BrowserMatch "MSIE [2-6]" \
+    	nokeepalive ssl-unclean-shutdown \
+    	downgrade-1.0 force-response-1.0
+    # MSIE 7 and newer should be able to use keepalive
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
 </VirtualHost>
 </IfModule>
