@@ -58,6 +58,8 @@ then
 	exit 1
 fi
 
+gitorious_checkport
+
 if [ "$SKIP_DEBOOTSTRAP" == "" ]
 then
 
@@ -77,7 +79,6 @@ then
 
 fi
 
-gitorious_checkport
 gitorious_setup
 gitorious_install_files
 
