@@ -15,13 +15,13 @@ EOF
 chmod +x /usr/sbin/invoke-rc.d
 
 cat <<EOF > /etc/apt/sources.list
-deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal main restricted
+deb http://mirror.ovh.net/ubuntu quantal main restricted
 deb http://security.ubuntu.com/ubuntu quantal-security main restricted
-deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal-updates main restricted
+deb http://mirror.ovh.net/ubuntu/ quantal-updates main restricted
 
-deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal universe multiverse
+deb http://mirror.ovh.net/ubuntu/ quantal universe multiverse
 deb http://security.ubuntu.com/ubuntu quantal-security universe multiverse
-deb http://ftp.free.fr/mirrors/ftp.ubuntu.com/ubuntu/ quantal-updates universe multiverse
+deb http://mirror.ovh.net/ubuntu/ quantal-updates universe multiverse
 EOF
 
 cat <<EOF > /etc/mtab
@@ -45,6 +45,7 @@ source /etc/profile.d/rvm.sh
 rvm install ree-1.8.7
 
 useradd -G rvm -m -U -s /bin/bash git
+adduser www-data git
 chown -R git:rvm /usr/local/rvm
 chmod -R 755 /usr/local/rvm
 
@@ -135,6 +136,8 @@ cat <<EOF > /etc/apache2/sites-available/default
     LogLevel warn
     
     CustomLog \${APACHE_LOG_DIR}/access.log combined
+    XSendFile on
+    XSendFilePath /var/git/repositories/
 </VirtualHost>
 EOF
 
@@ -193,6 +196,8 @@ cat <<EOF > /etc/apache2/sites-available/default-ssl
     # MSIE 7 and newer should be able to use keepalive
     BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
+    XSendFile on
+    XSendFilePath /var/git/repositories/
 </VirtualHost>
 </IfModule>
 EOF
