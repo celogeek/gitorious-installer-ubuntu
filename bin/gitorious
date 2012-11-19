@@ -14,7 +14,7 @@ gitorious command :
 	start: start gitorious
 	stop: stop gitorious
 	cron: start cron
-	clear-log: clear log
+	logrotate: run logrotate
 
 EOF
 exit 1
