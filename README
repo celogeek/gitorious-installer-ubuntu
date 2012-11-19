@@ -4,3 +4,28 @@ First you need deboostrap with Ubuntu Lucid support.
 On Ubuntu just install debootstrap :
 
 sudo apt-get install debootstrap
+
+Setup a hostname for your host, it will be used inside the subsystem.
+
+The default will be :
+
+hostname -f
+
+Then run the setup script :
+
+gitorious setup
+
+and let :
+
+mysql password empty
+validate ruby install by pressing 'q'
+and passenger by pressing enter
+
+To change the conf of gitorious, on the host type :
+
+gitorious conf
+
+You need to configure on host :
+gitorious init
+gitorious cron
+gitorious logrotate
