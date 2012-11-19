@@ -213,6 +213,16 @@ EOF
 ln -s /home/git/gitorious/script/gitorious /usr/local/bin/
 sed -i 's/^#!\/usr\/bin\/env ruby/#!\/usr\/local\/rvm\/bin\/gitorious_ruby/' /home/git/gitorious/script/gitorious
 
+cat <<EOF > /etc/logrotate.d/gitorious
+/home/git/gitorious/log/*log {
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+	/usr/bin/gitorious-tools-postlogrotate || true
+endscript
+EOF
+
 cat <<EOF
 
 Setup finish !
