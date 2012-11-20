@@ -234,7 +234,7 @@ Enter chroot       : gitorious enter
 
 To finish setup host, you have to :
 
-add "gitorious init" at start, example can be found on my blog.
+add "gitorious start / stop" at start, example can be found on my blog.
 add "gitorious cron" in your hourly cron
 add "gitorious logrotate" in your daily cron
 
