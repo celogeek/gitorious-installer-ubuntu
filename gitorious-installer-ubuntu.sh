@@ -15,6 +15,11 @@ function gitorious_checkport {
 		echo "Please change the host SSH port, gitorious will need it for ssh"
 		exit 1
 	fi
+	if nc -z $H 25
+	then
+		echo "Please change the host SMTP port, gitorious will need it for postfix"
+		exit 1
+	fi
 	if nc -z $H 80 || nc -z $H 443
 	then
 		echo "Please change the host HTTP / HTTPS port, gitorious will need it for apache2"

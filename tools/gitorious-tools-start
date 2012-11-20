@@ -4,6 +4,8 @@ echo "Reload conf ..."
 initctl reload-configuration
 echo "Start ssh ..."
 service ssh start &> /dev/null
+echo "Start postfix ..."
+service postfix start &> /dev/null
 echo "Start memcached ..."
 service memcached start &> /dev/null
 echo "Start mysql ..."
