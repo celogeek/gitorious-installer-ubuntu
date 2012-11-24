@@ -41,5 +41,15 @@ else
 		help
 	fi
 
+	if [ "$COMMAND" == "start" ]
+	then
+		sudo mount /var/lib/gitorious/dev/pts
+	fi
+
 	LANG=C sudo chroot "$INSTALL_DIR" "$TOOLS_BASE$COMMAND"
+
+	if [ "$COMMAND" == "stop" ]
+	then
+		sudo umount /var/lib/gitorious/dev/pts
+	fi
 fi
