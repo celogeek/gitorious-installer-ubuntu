@@ -79,6 +79,8 @@ function gitorious_install_files {
 		$SUDO install -o root -g root -m 0755 "$f" "$INSTALL_DIR/usr/bin/"
 	done
 	$SUDO install -o root -g root -m 0644 "upstart/gitorious.conf" "/etc/init/"
+	$SUDO install -o root -g root -m 0755 "cron/gitorious-hourly" "/etc/cron.hourly/"
+	$SUDO install -o root -g root -m 0755 "cron/gitorious-daily" "/etc/cron.daily/"
 }
 
 #CHECK NEED PACKAGE
