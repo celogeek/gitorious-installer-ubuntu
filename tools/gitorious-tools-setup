@@ -232,10 +232,6 @@ Stop service with  : gitorious stop
 Change conf with   : gitorious conf
 Enter chroot       : gitorious enter
 
-To finish setup host, you have to :
-
-add "gitorious start / stop" at start, example can be found on my blog.
-add "gitorious cron" in your hourly cron
-add "gitorious logrotate" in your daily cron
+To finish setup host, you have to reboot, upstart and cron will start as it should
 
 EOF
