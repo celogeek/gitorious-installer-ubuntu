@@ -137,7 +137,7 @@ cat <<EOF > /etc/apache2/sites-available/default
     
     CustomLog \${APACHE_LOG_DIR}/access.log combined
     XSendFile on
-    XSendFilePath /var/git/repositories/
+    XSendFilePath /var/git/
 </VirtualHost>
 EOF
 
@@ -197,7 +197,7 @@ cat <<EOF > /etc/apache2/sites-available/default-ssl
     BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
     XSendFile on
-    XSendFilePath /var/git/repositories/
+    XSendFilePath /var/git/
 </VirtualHost>
 </IfModule>
 EOF
