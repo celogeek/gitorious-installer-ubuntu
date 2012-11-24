@@ -78,6 +78,7 @@ function gitorious_install_files {
 	do
 		$SUDO install -o root -g root -m 0755 "$f" "$INSTALL_DIR/usr/bin/"
 	done
+	$SUDO install -o root -g root -m 0644 "upstart/gitorious.conf" "/etc/init/"
 }
 
 #CHECK NEED PACKAGE
