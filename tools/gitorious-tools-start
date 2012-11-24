@@ -2,6 +2,8 @@
 
 echo "Reload conf ..."
 initctl reload-configuration
+echo "Start syslog ..."
+service rsyslog start &> /dev/null
 echo "Start ssh ..."
 service ssh start &> /dev/null
 echo "Start postfix ..."

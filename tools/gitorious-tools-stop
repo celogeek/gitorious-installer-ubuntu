@@ -20,5 +20,5 @@ echo "Stop Stomp ..."
 su - git bash -c 'cd gitorious; kill $(cat log/stompserver.pid)' &> /dev/null
 echo "Stop mysql ..."
 service mysql stop &> /dev/null
-
-
+echo "Stop syslog ..."
+service rsyslog stop &> /dev/null
