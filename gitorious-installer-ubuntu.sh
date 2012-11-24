@@ -61,7 +61,7 @@ function gitorious_setup {
 	sudo sed -i "/gitorious/d" /etc/fstab
 	sudo sed -i "/gitorious/d" /etc/hosts
 	cat <<EOF | sudo tee -a /etc/fstab > /dev/null
-/dev/pts $INSTALL_DIR/dev/pts none bind 0 4
+/dev/pts $INSTALL_DIR/dev/pts none bind,noauto 0 4
 proc $INSTALL_DIR/proc proc defaults 0 4
 sysfs $INSTALL_DIR/sys sysfs defaults 0 4
 EOF
@@ -98,6 +98,8 @@ then
 		exit 1
 	fi
 
+	gitorious_checkport
+
 	if [ ! -x $SUDO ]
 	then
 		echo "Please install sudo and allow this user to use it"
@@ -108,7 +110,6 @@ then
 
 fi
 
-gitorious_checkport
 gitorious_setup
 gitorious_install_files
 
